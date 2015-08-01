@@ -2,18 +2,26 @@
   "name": "broccoli-file-size",
   "version": "0.1.1",
   "description": "Broccoli plugin to display file sizes.",
-  "main": "index.js",
-  "author": "Alex Mercier",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/amercier/broccoli-file-size.git"
+  "repository": "amercier/broccoli-file-size",
+  "author": {
+    "name": "Alex Mercier",
+    "email": "pro.alexandre.mercier@gmail.com",
+    "url": "amercier.com"
+  },
+  "engines": {
+    "node": ">=0.10.0"
   },
   "scripts": {
     "test": "broccoli build temp && mocha"
   },
+  "files": [
+    "index.js"
+  ],
   "keywords": [
     "broccoli-plugin",
+    "broccoli",
+    "filesize",
     "file",
     "size",
     "weight",
