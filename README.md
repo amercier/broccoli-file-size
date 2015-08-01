@@ -21,3 +21,19 @@ Usage
 
     var fileSize = require('broccoli-file-size');
     tree = fileSize(tree);
+
+Options
+=======
+
+    tree = fileSize(tree, {
+      colors: true,
+      gzipped: true
+    });
+
+### colors
+
+Enable/disable colors (default: `true`).
+
+### gzipped
+
+Show/hide gzipped size (default: `true`).
