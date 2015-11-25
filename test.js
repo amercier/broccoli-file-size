@@ -1,6 +1,6 @@
 'use strict';
 var assert = require('assert');
-var buffertools = require('buffertools');
+var bufferEqual = require('buffer-equal');
 var fs = require('fs');
 var rimraf = require('rimraf');
 
@@ -17,7 +17,7 @@ it('does not alter text files', function () {
 
 it('does not alter binary files', function () {
   assert.ok(
-    buffertools.equals(
+    bufferEqual(
       fs.readFileSync('temp/broccoli-logo.generated.png'),
       fs.readFileSync('fixture/broccoli-logo.generated.png')
     )
