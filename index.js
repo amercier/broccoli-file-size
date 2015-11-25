@@ -1,54 +1,73 @@
 'use strict';
-var chalk = require('chalk'),
-  Filter = require('broccoli-filter'),
-  filesize = require('filesize'),
-  fs = require('fs'),
-  merge = require('merge'),
-  mkdirp = require('mkdirp'),
+
+var fs = require('fs'),
+  util = require('util'),
   path = require('path'),
-  RSVP = require('rsvp'),
-  symlinkOrCopy = require('symlink-or-copy'),
   zlib = require('zlib');
 
-function FileSizeFilter(inputTree, options) {
-  if (!(this instanceof FileSizeFilter)) {
-    return new FileSizeFilter(inputTree);
+var chalk = require('chalk'),
+  filesize = require('filesize'),
+  merge = require('merge'),
+  Plugin = require('broccoli-plugin'),
+  Promise = require('rsvp').Promise,
+  rimraf = require('rimraf'),
+  symlinkOrCopy = require('symlink-or-copy'),
+  walk = require('walk');
+
+function FileSizePlugin(inputNode, options) {
+  if (!(this instanceof FileSizePlugin)) {
+    return new FileSizePlugin(inputNode);
   }
 
-  this.inputTree = inputTree;
   this.options = merge({
     gzipped: true,
     colors: true
   }, options);
+
+  Plugin.call(this, [inputNode], {
+    annotation: this.options.annotation
+  });
 }
 
-FileSizeFilter.prototype = Object.create(Filter.prototype);
-FileSizeFilter.prototype.constructor = FileSizeFilter;
+util.inherits(FileSizePlugin, Plugin);
 
-FileSizeFilter.prototype.getDestFilePath = function (relativePath) {
-  return relativePath;
-};
+FileSizePlugin.prototype.build = function() {
+  var inputPath = this.inputPaths[0];
 
-Filter.prototype.processFile = function processFile(srcDir, destDir, relativePath) {
-  return this.readFile(path.join(srcDir, relativePath))
-  .then(function(contents) {
-    return this.processString(contents, relativePath);
-  }.bind(this))
-  .then(function asyncOutputFilteredFile() {
-    var outputPath = this.getDestFilePath(relativePath);
-    if (outputPath == null) {
-      throw new Error('canProcessFile("' + relativePath + '") is true, but getDestFilePath("' + relativePath + '") is null');
-    }
-    mkdirp.sync(path.dirname(outputPath));
-    this.copy(
-      path.join(srcDir, relativePath),
-      path.join(destDir, outputPath)
-    );
+  // Symlink/copy input -> output
+  this.copy(inputPath, this.outputPath);
+
+  // Process output directory
+  return new Promise(function(resolve, reject) {
+    walk.walk(inputPath)
+    .on('file', function(root, stats, next) {
+      this.processFile(root, stats.name).then(next);
+    }.bind(this))
+    .on('errors', reject)
+    .on('end', resolve);
   }.bind(this));
 };
 
-FileSizeFilter.prototype.readFile = function(path) {
-  return new RSVP.Promise(function(resolve, reject) {
+FileSizePlugin.prototype.copy = function(inputPath, outputPath) {
+  try {
+    symlinkOrCopy.sync(inputPath, outputPath);
+  } catch(e) {
+    if (fs.existsSync(outputPath)) {
+      rimraf.sync(outputPath);
+    }
+    symlinkOrCopy.sync(inputPath, outputPath);
+  }
+};
+
+FileSizePlugin.prototype.processFile = function processFile(dir, relativePath) {
+  return this.readFile(path.join(dir, relativePath))
+  .then(function(contents) {
+    return this.processString(contents, relativePath);
+  }.bind(this))
+};
+
+FileSizePlugin.prototype.readFile = function readFile(path) {
+  return new Promise(function(resolve, reject) {
     fs.readFile(path, function(err, contents) {
       if (err) {
         reject(err);
@@ -60,12 +79,12 @@ FileSizeFilter.prototype.readFile = function(path) {
   }.bind(this));
 };
 
-FileSizeFilter.prototype.processString = function(content, relativePath) {
+FileSizePlugin.prototype.processString = function processString(content, relativePath) {
   var message = relativePath && chalk.yellow(relativePath)
     + ' => ' + chalk.green(filesize(content && content.length)),
     options = this.options;
 
-  return new RSVP.Promise(function(resolve, reject) {
+  return new Promise(function(resolve, reject) {
       if (options.gzipped) {
         zlib.gzip(new Buffer(content), function(err, result) {
           if (err) {
@@ -83,22 +102,4 @@ FileSizeFilter.prototype.processString = function(content, relativePath) {
     });
 };
 
-FileSizeFilter.prototype.copy = function(sourcePath, destPath) {
-  var destDir = path.dirname(destPath);
-
-  try {
-    symlinkOrCopy.sync(sourcePath, destPath);
-  } catch(e) {
-    if (!fs.existsSync(destDir)) {
-      mkdirp.sync(destDir);
-    }
-    try {
-      fs.unlinkSync(destPath);
-    } catch(e) {
-
-    }
-    symlinkOrCopy.sync(sourcePath, destPath);
-  }
-};
-
-module.exports = FileSizeFilter;
+module.exports = FileSizePlugin;

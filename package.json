@@ -13,7 +13,8 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "rm -rf temp && broccoli build temp && mocha"
+    "test": "rm -rf tmp temp && broccoli build temp && mocha",
+    "start": "rm -rf tmp && broccoli serve"
   },
   "files": [
     "index.js"
@@ -31,18 +32,19 @@
   ],
   "dependencies": {
     "broccoli-filter": "^0.1.6",
+    "broccoli-plugin": "^1.2.1",
     "chalk": "^1.1.0",
     "filesize": "^3.1.3",
     "merge": "^1.2.0",
-    "mkdirp": "^0.5.1",
+    "rimraf": "^2.4.2",
     "rsvp": "^3.0.20",
-    "symlink-or-copy": "^1.0.1"
+    "symlink-or-copy": "^1.0.1",
+    "walk": "^2.3.9"
   },
   "devDependencies": {
     "broccoli": "^0.16.5",
     "broccoli-cli": "^1.0.0",
     "buffer-equal": "0.0.1",
-    "mocha": "^2.2.5",
-    "rimraf": "^2.4.2"
+    "mocha": "^2.2.5"
   }
 }
