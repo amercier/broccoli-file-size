@@ -1,15 +1,25 @@
 'use strict';
 var assert = require('assert');
+var buffertools = require('buffertools');
 var fs = require('fs');
 var rimraf = require('rimraf');
 
-afterEach(function () {
+after(function () {
   rimraf.sync('temp');
 });
 
-it('should not alterate content', function () {
+it('does not alter text files', function () {
   assert.equal(
     fs.readFileSync('temp/lorem.txt', 'utf8'),
     fs.readFileSync('fixture/lorem.txt', 'utf8')
+  );
+});
+
+it('does not alter binary files', function () {
+  assert.ok(
+    buffertools.equals(
+      fs.readFileSync('temp/broccoli-logo.generated.png'),
+      fs.readFileSync('fixture/broccoli-logo.generated.png')
+    )
   );
 });
