@@ -3,7 +3,6 @@ var chalk = require('chalk'),
   Filter = require('broccoli-filter'),
   filesize = require('filesize'),
   merge = require('merge'),
-  RSVP = require('rsvp'),
   zlib = require('zlib');
 
 function FileSizeFilter(inputTree, options) {
@@ -30,7 +29,7 @@ FileSizeFilter.prototype.processString = function (content, relativePath) {
     + ' => ' + chalk.green(filesize(content && content.length)),
     options = this.options;
 
-  return new RSVP.Promise(function(resolve, reject) {
+  return new Promise(function(resolve, reject) {
       if (options.gzipped) {
         zlib.gzip(new Buffer(content), function(err, result) {
           if (err) {
