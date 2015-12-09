@@ -23,3 +23,10 @@ it('does not alter binary files', function () {
     )
   );
 });
+
+it('does not alter paths', function () {
+  assert.equal(
+    fs.readFileSync('temp/subdir/other.txt', 'utf8'),
+    fs.readFileSync('fixture/subdir/other.txt', 'utf8')
+  );
+});
