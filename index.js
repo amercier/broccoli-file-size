@@ -10,9 +10,18 @@ var chalk = require('chalk'),
   merge = require('merge'),
   Plugin = require('broccoli-plugin'),
   Promise = require('rsvp').Promise,
+  promisify = require('promisify-node'),
   rimraf = require('rimraf'),
   symlinkOrCopy = require('symlink-or-copy'),
   walk = require('walk');
+
+var pfs = {
+    readFile: promisify(fs.readFile),
+    stat: promisify(fs.stat)
+  },
+  pzlib = {
+    gzip: promisify(zlib.gzip)
+  };
 
 function FileSizePlugin(inputNode, options) {
   if (!(this instanceof FileSizePlugin)) {
@@ -63,41 +72,15 @@ FileSizePlugin.prototype.copy = function(inputPath, outputPath) {
 FileSizePlugin.prototype.processFile = function processFile(dir, relativePath) {
   var absolutePath = path.join(dir, relativePath);
   if (this.options.gzipped) {
-    return this.readFile(absolutePath).then(function(contents) {
+    return pfs.readFile(absolutePath).then(function(contents) {
       return this.processString(relativePath, contents);
     }.bind(this));
   }
   else {
-    return this.statFile(absolutePath).then(function(stat) {
+    return pfs.stat(absolutePath).then(function(stat) {
       return this.processStats(relativePath, stat);
     }.bind(this));
   }
-};
-
-FileSizePlugin.prototype.statFile = function statFile(path) {
-  return new Promise(function(resolve, reject) {
-    fs.stat(path, function(err, stats) {
-      if (err) {
-        reject(err);
-      }
-      else {
-        resolve(stats);
-      }
-    });
-  }.bind(this));
-};
-
-FileSizePlugin.prototype.readFile = function readFile(path) {
-  return new Promise(function(resolve, reject) {
-    fs.readFile(path, function(err, contents) {
-      if (err) {
-        reject(err);
-      }
-      else {
-        resolve(contents);
-      }
-    });
-  }.bind(this));
 };
 
 FileSizePlugin.prototype.processStats = function(relativePath, stats) {
@@ -106,7 +89,7 @@ FileSizePlugin.prototype.processStats = function(relativePath, stats) {
 
 FileSizePlugin.prototype.processString = function processString(relativePath, content) {
   if (this.options.gzipped) {
-    return this.gzip(content).then(function(gzippedContent) {
+    return pzlib.gzip(content).then(function(gzippedContent) {
       this.print(relativePath, content.toString().length, gzippedContent.toString().length);
     }.bind(this));
   }
@@ -114,19 +97,6 @@ FileSizePlugin.prototype.processString = function processString(relativePath, co
     this.print(relativePath, filesize(content));
   }
 };
-
-FileSizePlugin.prototype.gzip = function(content) {
-  return new Promise(function(resolve, reject) {
-    zlib.gzip(new Buffer(content), function(err, result) {
-      if (err) {
-        reject(err);
-      }
-      else {
-        resolve(result);
-      }
-    });
-  }.bind(this));
-}
 
 FileSizePlugin.prototype.print = function print(relativePath, size, gzippedSize) {
   var message = chalk.yellow(relativePath) + ' => ' + chalk.green(filesize(size));
