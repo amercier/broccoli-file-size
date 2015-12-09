@@ -1,2 +1,5 @@
 'use strict';
-module.exports = require('./')('fixture');
+
+var FileSizePlugin = require('./');
+
+module.exports = new FileSizePlugin(new FileSizePlugin('fixture'), { gzipped: false, colors: false });

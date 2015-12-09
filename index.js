@@ -61,10 +61,30 @@ FileSizePlugin.prototype.copy = function(inputPath, outputPath) {
 };
 
 FileSizePlugin.prototype.processFile = function processFile(dir, relativePath) {
-  return this.readFile(path.join(dir, relativePath))
-  .then(function(contents) {
-    return this.processString(contents, relativePath);
-  }.bind(this))
+  var absolutePath = path.join(dir, relativePath);
+  if (this.options.gzipped) {
+    return this.readFile(absolutePath).then(function(contents) {
+      return this.processString(relativePath, contents);
+    }.bind(this));
+  }
+  else {
+    return this.statFile(absolutePath).then(function(stat) {
+      return this.processStats(relativePath, stat);
+    }.bind(this));
+  }
+};
+
+FileSizePlugin.prototype.statFile = function statFile(path) {
+  return new Promise(function(resolve, reject) {
+    fs.stat(path, function(err, stats) {
+      if (err) {
+        reject(err);
+      }
+      else {
+        resolve(stats);
+      }
+    });
+  }.bind(this));
 };
 
 FileSizePlugin.prototype.readFile = function readFile(path) {
@@ -80,27 +100,43 @@ FileSizePlugin.prototype.readFile = function readFile(path) {
   }.bind(this));
 };
 
-FileSizePlugin.prototype.processString = function processString(content, relativePath) {
-  var message = relativePath && chalk.yellow(relativePath)
-    + ' => ' + chalk.green(filesize(content && content.length)),
-    options = this.options;
+FileSizePlugin.prototype.processStats = function(relativePath, stats) {
+  this.print(relativePath, stats.size);
+};
 
+FileSizePlugin.prototype.processString = function processString(relativePath, content) {
+  if (this.options.gzipped) {
+    return this.gzip(content).then(function(gzippedContent) {
+      this.print(relativePath, content.toString().length, gzippedContent.toString().length);
+    }.bind(this));
+  }
+  else {
+    this.print(relativePath, filesize(content));
+  }
+};
+
+FileSizePlugin.prototype.gzip = function(content) {
   return new Promise(function(resolve, reject) {
-      if (options.gzipped) {
-        zlib.gzip(new Buffer(content), function(err, result) {
-          if (err) {
-            return reject(err);
-          }
-          resolve(message + ' ' + chalk.grey('(' + filesize(result.length) + ' gzipped)\n'));
-        });
+    zlib.gzip(new Buffer(content), function(err, result) {
+      if (err) {
+        reject(err);
       }
       else {
-        resolve(message);
+        resolve(result);
       }
-    })
-    .then(function(message) {
-      process.stdout.write(options.colors ? message : chalk.stripColor(content));
     });
-};
+  }.bind(this));
+}
+
+FileSizePlugin.prototype.print = function print(relativePath, size, gzippedSize) {
+  var message = chalk.yellow(relativePath) + ' => ' + chalk.green(filesize(size));
+  if (gzippedSize !== undefined) {
+    message = message + ' ' + chalk.grey('(' + filesize(gzippedSize) + ' gzipped)');
+  }
+  if (!this.options.colors) {
+    message = chalk.stripColor(message);
+  }
+  process.stdout.write(message + '\n');
+}
 
 module.exports = FileSizePlugin;
