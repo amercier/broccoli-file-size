@@ -48,7 +48,7 @@ FileSizePlugin.prototype.build = function() {
 
   // Process output directory
   return new Promise(function(resolve, reject) {
-    walk.walk(inputPath)
+    walk.walk(inputPath, { followLinks: true })
     .on('file', function(root, stats, next) {
       var destDir = path.relative(inputPath, root);
       this.processFile(inputPath, destDir ? path.join(destDir, stats.name) : stats.name).then(next);
