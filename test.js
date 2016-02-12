@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 'use strict';
 var assert = require('assert');
 var bufferEqual = require('buffer-equal');
