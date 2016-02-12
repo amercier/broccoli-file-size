@@ -13,7 +13,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "rm -rf tmp temp && broccoli build temp && mocha",
+    "test": "eslint . && rm -rf tmp temp && broccoli build temp && mocha",
     "start": "rm -rf tmp && broccoli serve"
   },
   "files": [
@@ -45,6 +45,8 @@
     "broccoli": "^0.16.5",
     "broccoli-cli": "^1.0.0",
     "buffer-equal": "0.0.1",
+    "eslint": "^1.0.0",
+    "eslint-config-airbnb": "^5.0.0",
     "mocha": "^2.2.5"
   }
 }
