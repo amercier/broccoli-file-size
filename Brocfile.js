@@ -2,4 +2,7 @@
 
 var FileSizePlugin = require('./');
 
-module.exports = new FileSizePlugin(new FileSizePlugin('fixture'), { gzipped: false, colors: false });
+module.exports = new FileSizePlugin(
+  new FileSizePlugin('fixture'),
+  { gzipped: false, colors: false }
+);
