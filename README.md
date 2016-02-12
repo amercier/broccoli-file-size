@@ -23,13 +23,20 @@ Installation
 Usage
 =====
 
-    var fileSize = require('broccoli-file-size');
-    tree = fileSize(tree);
+### ES5
+
+    var FileSizePlugin = require('broccoli-file-size').default;
+    tree = new FileSizePlugin(tree);
+
+### ES2015+
+
+    import FileSizePlugin from 'broccoli-file-size';
+    tree = new FileSizePlugin(tree);
 
 Options
 =======
 
-    tree = fileSize(tree, {
+    tree = new FileSizePlugin(tree, {
       colors: true,
       gzipped: true
     });

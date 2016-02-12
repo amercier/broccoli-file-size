@@ -13,11 +13,13 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "eslint . && rm -rf tmp temp && broccoli build temp && mocha",
-    "start": "rm -rf tmp && broccoli serve"
+    "prepublish": "rm -rf dist && babel src -d dist",
+    "test-fixture": "cd specs/fixture && rm -rf tmp output && babel-node ../../node_modules/.bin/broccoli build output",
+    "test": "eslint . && npm run test-fixture && mocha specs --compilers js:babel-register"
   },
   "files": [
-    "index.js"
+    "dist/index.js",
+    "src/index.js"
   ],
   "keywords": [
     "broccoli-plugin",
@@ -34,6 +36,7 @@
     "broccoli-plugin": "^1.2.1",
     "chalk": "^1.1.0",
     "filesize": "^3.1.3",
+    "lodash": "^4.3.0",
     "merge": "^1.2.0",
     "promisify-node": "^0.3.0",
     "rimraf": "^2.4.2",
@@ -42,11 +45,16 @@
     "walk": "^2.3.9"
   },
   "devDependencies": {
+    "babel-cli": "^6.5.1",
+    "babel-plugin-add-module-exports": "^0.1.2",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-register": "^6.5.2",
     "broccoli": "^0.16.5",
     "broccoli-cli": "^1.0.0",
     "buffer-equal": "0.0.1",
     "eslint": "^1.0.0",
     "eslint-config-airbnb": "^5.0.0",
+    "eslint-plugin-react": "^3.16.1",
     "mocha": "^2.2.5"
   }
 }
