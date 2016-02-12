@@ -40,16 +40,16 @@ function FileSizePlugin(inputNode, options) {
 
 util.inherits(FileSizePlugin, Plugin);
 
-FileSizePlugin.prototype.build = function() {
+FileSizePlugin.prototype.build = function () {
   var inputPath = this.inputPaths[0];
 
   // Symlink/copy input -> output
   this.copy(inputPath, this.outputPath);
 
   // Process output directory
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     walk.walk(inputPath, { followLinks: true })
-    .on('file', function(root, stats, next) {
+    .on('file', function (root, stats, next) {
       var destDir = path.relative(inputPath, root);
       this.processFile(inputPath, destDir ? path.join(destDir, stats.name) : stats.name).then(next);
     }.bind(this))
@@ -58,10 +58,10 @@ FileSizePlugin.prototype.build = function() {
   }.bind(this));
 };
 
-FileSizePlugin.prototype.copy = function(inputPath, outputPath) {
+FileSizePlugin.prototype.copy = function (inputPath, outputPath) {
   try {
     symlinkOrCopy.sync(inputPath, outputPath);
-  } catch(e) {
+  } catch (e) {
     if (fs.existsSync(outputPath)) {
       rimraf.sync(outputPath);
     }
@@ -72,24 +72,24 @@ FileSizePlugin.prototype.copy = function(inputPath, outputPath) {
 FileSizePlugin.prototype.processFile = function processFile(dir, relativePath) {
   var absolutePath = path.join(dir, relativePath);
   if (this.options.gzipped) {
-    return pfs.readFile(absolutePath).then(function(contents) {
+    return pfs.readFile(absolutePath).then(function (contents) {
       return this.processString(relativePath, contents);
     }.bind(this));
   }
   else {
-    return pfs.stat(absolutePath).then(function(stat) {
+    return pfs.stat(absolutePath).then(function (stat) {
       return this.processStats(relativePath, stat);
     }.bind(this));
   }
 };
 
-FileSizePlugin.prototype.processStats = function(relativePath, stats) {
+FileSizePlugin.prototype.processStats = function (relativePath, stats) {
   this.print(relativePath, stats.size);
 };
 
 FileSizePlugin.prototype.processString = function processString(relativePath, content) {
   if (this.options.gzipped) {
-    return pzlib.gzip(content).then(function(gzippedContent) {
+    return pzlib.gzip(content).then(function (gzippedContent) {
       this.print(relativePath, content.toString().length, gzippedContent.toString().length);
     }.bind(this));
   }
@@ -107,6 +107,6 @@ FileSizePlugin.prototype.print = function print(relativePath, size, gzippedSize)
     message = chalk.stripColor(message);
   }
   process.stdout.write(message + '\n');
-}
+};
 
 module.exports = FileSizePlugin;
