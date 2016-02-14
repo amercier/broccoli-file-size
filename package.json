@@ -17,6 +17,7 @@
     "test-fixture": "cd specs/fixture && rm -rf tmp output && babel-node ../../node_modules/.bin/broccoli build output",
     "test": "eslint . && npm run test-fixture && mocha specs --compilers js:babel-register"
   },
+  "main": "dist/index.js",
   "files": [
     "dist/index.js",
     "src/index.js"
