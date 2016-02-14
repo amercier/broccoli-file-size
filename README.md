@@ -25,7 +25,7 @@ Usage
 
 ### ES5
 
-    var FileSizePlugin = require('broccoli-file-size').default;
+    var FileSizePlugin = require('broccoli-file-size');
     tree = new FileSizePlugin(tree);
 
 ### ES2015+
