@@ -1,4 +1,5 @@
-node_modules
-temp
-tmp
+/dist
+/node_modules
+/specs/fixture/output
+/specs/fixture/tmp
 npm-debug.log
