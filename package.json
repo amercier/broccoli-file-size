@@ -14,8 +14,9 @@
   },
   "scripts": {
     "prepublish": "rm -rf dist && babel src -d dist",
-    "test": "eslint . && mocha specs --compilers js:babel-register"
-  },
+    "test": "eslint . && npm run test-fixture && rm -rf coverage && istanbul cover _mocha -- specs --compilers js:babel-register",
+    "start": "eslint . && mocha specs --compilers js:babel-register --watch --growl"
+ },
   "main": "dist/index.js",
   "files": [
     "dist/index.js",
