@@ -7,3 +7,11 @@ node_js:
 cache:
   directories:
   - node_modules
+deploy:
+  provider: npm
+  email: pro.alexandre.mercier@gmail.com
+  api_key: $NPM_AUTH_TOKEN
+  on:
+    tags: true
+    repo: amercier/broccoli-file-size
+    condition: $(node -v | egrep v5.6 | wc -l) = 1
