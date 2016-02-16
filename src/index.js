@@ -75,16 +75,13 @@ export default class FileSizePlugin extends Plugin {
   }
 
   processString(relativePath, content) {
-    if (this.options.gzipped) {
-      return pgzip(content).then(
-        gzippedContent => this.print(
-          relativePath,
-          content.toString().length,
-          gzippedContent.toString().length
-        )
-      );
-    }
-    this.print(relativePath, filesize(content));
+    return pgzip(content).then(
+      gzippedContent => this.print(
+        relativePath,
+        content.toString().length,
+        gzippedContent.toString().length
+      )
+    );
   }
 
   print(relativePath, size, gzippedSize) {
