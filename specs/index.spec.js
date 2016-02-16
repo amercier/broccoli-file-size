@@ -12,7 +12,7 @@ import FileSizePlugin from '../src';
 let tree;
 before(() => {
   tree = new FileSizePlugin(
-    new FileSizePlugin(join(__dirname, 'fixture')),
+    new FileSizePlugin([join(__dirname, 'fixture')]),
     { gzipped: false, colors: false }
   );
   return new Builder(tree).build();
