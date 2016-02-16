@@ -1,0 +1,7 @@
+*.log
+.*
+coverage
+esdoc
+esdoc.json
+specs
+tmp
