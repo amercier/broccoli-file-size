@@ -1,33 +1,42 @@
 /* eslint-env mocha */
 
-import assert from 'assert';
-import bufferEqual from 'buffer-equal';
 import fs from 'fs';
-import { sync } from 'rimraf';
+import { join } from 'path';
 
-after(() => {
-  sync('specs/fixture/output');
+import assert from 'assert';
+import { Builder } from 'broccoli';
+import bufferEqual from 'buffer-equal';
+
+import FileSizePlugin from '../src';
+
+let tree;
+before(() => {
+  tree = new FileSizePlugin(
+    new FileSizePlugin(join(__dirname, 'fixture')),
+    { gzipped: false, colors: false }
+  );
+  return new Builder(tree).build();
 });
 
 it('does not alter text files', () => {
   assert.equal(
-    fs.readFileSync('specs/fixture/output/lorem.txt', 'utf8'),
-    fs.readFileSync('specs/fixture/files/lorem.txt', 'utf8')
+    fs.readFileSync(join(tree.outputPath, 'lorem.txt'), 'utf8'),
+    fs.readFileSync(join(__dirname, 'fixture', 'lorem.txt'), 'utf8')
   );
 });
 
 it('does not alter binary files', () => {
   assert.ok(
     bufferEqual(
-      fs.readFileSync('specs/fixture/output/broccoli-logo.generated.png'),
-      fs.readFileSync('specs/fixture/files/broccoli-logo.generated.png')
+      fs.readFileSync(join(tree.outputPath, 'broccoli-logo.generated.png')),
+      fs.readFileSync(join(__dirname, 'fixture', 'broccoli-logo.generated.png'))
     )
   );
 });
 
 it('does not alter paths', () => {
   assert.equal(
-    fs.readFileSync('specs/fixture/output/subdir/other.txt', 'utf8'),
-    fs.readFileSync('specs/fixture/files/subdir/other.txt', 'utf8')
+    fs.readFileSync(join(tree.outputPath, 'subdir', 'other.txt'), 'utf8'),
+    fs.readFileSync(join(__dirname, 'fixture', 'subdir', 'other.txt'), 'utf8')
   );
 });
