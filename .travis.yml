@@ -7,6 +7,8 @@ node_js:
 cache:
   directories:
   - node_modules
+after_success:
+- cat coverage/lcov.info | ./node_modules/.bin/codecov
 deploy:
   provider: npm
   email: pro.alexandre.mercier@gmail.com
