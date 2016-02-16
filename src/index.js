@@ -26,6 +26,12 @@ export default class FileSizePlugin extends Plugin {
   constructor(inputNodes, options) {
     super(isArray(inputNodes) ? inputNodes : [inputNodes], options);
 
+    /**
+     * Broccoli plugin options
+     * @type {Object}
+     * @property {Boolean} [gzipped=true] Whether to display gzipped size or not
+     * @property {Boolean} [colors=true] Whether to use colors or not
+     */
     this.options = merge({
       gzipped: true,
       colors: true,
