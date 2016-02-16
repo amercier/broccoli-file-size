@@ -14,6 +14,7 @@
   },
   "scripts": {
     "prepublish": "rm -rf dist && babel src -d dist",
+    "doc": "esdoc -c esdoc.json",
     "test": "eslint . && rm -rf coverage && istanbul cover _mocha -- specs --compilers js:babel-register",
     "start": "eslint . && mocha specs --compilers js:babel-register --watch --growl"
   },
@@ -50,6 +51,7 @@
     "broccoli": "^0.16.5",
     "buffer-equal": "1.0.0",
     "codecov": "^1.0.1",
+    "esdoc": "^0.4.5",
     "eslint": "^1.0.0",
     "eslint-config-airbnb": "^5.0.0",
     "eslint-plugin-react": "^3.16.1",
