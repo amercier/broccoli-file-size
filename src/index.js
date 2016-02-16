@@ -2,16 +2,15 @@ import { existsSync, readFile, stat } from 'fs';
 import { join, relative } from 'path';
 import { gzip } from 'zlib';
 
+import Promise, { promisify } from 'bluebird';
 import { green, grey, stripColor, yellow } from 'chalk';
 import filesize from 'filesize';
 import { isArray, isUndefined } from 'lodash';
 import merge from 'merge';
 import Plugin from 'broccoli-plugin';
-import promisify from 'promisify-node';
 import rimraf from 'rimraf';
 import symlinkOrCopy from 'symlink-or-copy';
 import walk from 'walk';
-import { Promise } from 'rsvp';
 
 const [preadFile, pstat, pgzip] = [readFile, stat, gzip].map(promisify);
 
