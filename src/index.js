@@ -2,7 +2,7 @@ import { existsSync, readFile, stat } from 'fs';
 import { join, relative } from 'path';
 import { gzip } from 'zlib';
 
-import Promise, { promisify } from 'bluebird';
+import Promise, { promisify, resolve } from 'bluebird';
 import { green, grey, stripColor, yellow } from 'chalk';
 import filesize from 'filesize';
 import { isArray, isUndefined, merge } from 'lodash';
@@ -31,17 +31,22 @@ export default class FileSizePlugin extends Plugin {
     this.copy(inputPath, this.outputPath);
 
     // Process output directory
-    return new Promise((resolve, reject) => {
-      walk.walk(inputPath, { followLinks: true })
+    return this.listFiles(inputPath, relativePath =>
+      this.processFile(inputPath, relativePath)
+        .then(sizes => this.print(relativePath, ...sizes))
+    );
+  }
+
+  listFiles(dir, callback) {
+    return new Promise((resolveThis, reject) => {
+      walk.walk(dir, { followLinks: true })
       .on('file', (root, stats, next) => {
-        const destDir = relative(inputPath, root);
-        this.processFile(
-          inputPath,
-          destDir ? join(destDir, stats.name) : stats.name
-        ).then(next);
+        const destDir = relative(dir, root);
+        const relativePath = destDir ? join(destDir, stats.name) : stats.name;
+        resolve(relativePath).then(callback).then(next);
       })
       .on('errors', reject)
-      .on('end', resolve);
+      .on('end', resolveThis);
     });
   }
 
@@ -59,27 +64,23 @@ export default class FileSizePlugin extends Plugin {
   processFile(dir, relativePath) {
     const absolutePath = join(dir, relativePath);
     if (this.options.gzipped) {
-      return preadFile(absolutePath).then(
-        contents => this.processString(relativePath, contents)
-      );
+      return preadFile(absolutePath)
+        .then(contents => this.processString(relativePath, contents));
     }
-    return pstat(absolutePath).then(
-      stats => this.processStats(relativePath, stats)
-    );
+    return pstat(absolutePath)
+      .then(stats => this.processStats(relativePath, stats));
   }
 
   processStats(relativePath, stats) {
-    this.print(relativePath, stats.size);
+    return resolve([stats.size]);
   }
 
   processString(relativePath, content) {
-    return pgzip(content).then(
-      gzippedContent => this.print(
-        relativePath,
+    return pgzip(content)
+      .then(gzippedContent => [
         content.toString().length,
-        gzippedContent.toString().length
-      )
-    );
+        gzippedContent.toString().length,
+      ]);
   }
 
   print(relativePath, size, gzippedSize) {
