@@ -5,6 +5,7 @@ broccoli-file-size
 [![NPM Downloads](https://img.shields.io/npm/dm/broccoli-file-size.svg)](https://www.npmjs.com/package/broccoli-file-size)
 [![Build Status](https://img.shields.io/travis/amercier/broccoli-file-size/master.svg)](https://travis-ci.org/amercier/broccoli-file-size)
 [![Test Coverage](https://img.shields.io/codecov/c/github/amercier/broccoli-file-size/master.svg)](https://codecov.io/github/amercier/broccoli-file-size?branch=master)
+[![API Documentation](https://doc.esdoc.org/github.com/amercier/broccoli-file-size/badge.svg)](https://doc.esdoc.org/github.com/amercier/broccoli-file-size/)
 [![Dependency Status](http://img.shields.io/gemnasium/amercier/broccoli-file-size.svg)](https://gemnasium.com/amercier/broccoli-file-size)
 
 
