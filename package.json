@@ -51,6 +51,7 @@
     "babel-register": "^6.5.2",
     "broccoli": "^0.16.5",
     "buffer-equal": "1.0.0",
+    "codeclimate-test-reporter": "^0.3.1",
     "codecov": "^1.0.1",
     "esdoc": "^0.4.5",
     "eslint": "^1.0.0",
