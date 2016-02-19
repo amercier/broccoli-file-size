@@ -1,6 +1,6 @@
 {
   "name": "broccoli-file-size",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Broccoli plugin to display file sizes.",
   "license": "MIT",
   "repository": "amercier/broccoli-file-size",
