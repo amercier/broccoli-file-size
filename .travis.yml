@@ -1,12 +1,14 @@
 sudo: false
 language: node_js
 node_js:
-- 5.6 # Latest
-- 4.3 # LTS
-- 0.1
+- 5.9 # Latest
+- 4.4 # LTS
+- 0.10 # Earliest version supported
 cache:
   directories:
   - $HOME/.npm
+before_install: npm -g install npm@latest
+script: npm test -- --timeout 15000
 after_success:
 - cat coverage/lcov.info | ./node_modules/.bin/codecov
 deploy:
