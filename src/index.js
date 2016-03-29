@@ -3,7 +3,7 @@ import { join, relative } from 'path';
 import { gzip } from 'zlib';
 
 import Promise, { promisify, resolve } from 'bluebird';
-import { green, grey, stripColor, yellow } from 'chalk';
+import chalk from 'chalk';
 import filesize from 'filesize';
 import { isArray, isUndefined, merge } from 'lodash';
 import Plugin from 'broccoli-plugin';
@@ -129,13 +129,14 @@ export default class FileSizePlugin extends Plugin {
    * @param {Number} [gzippedSize] Size of the gzipped version of the file
    */
   print(relativePath, size, gzippedSize) {
+    const ctx = new chalk.constructor({ enabled: this.options.colors });
+    const { green, grey, yellow } = ctx;
+    
     let message = `${yellow(relativePath)} => ${green(filesize(size))}`;
     if (!isUndefined(gzippedSize)) {
       message += grey(` (${filesize(gzippedSize)} gzipped)`);
     }
-    if (!this.options.colors) {
-      message = stripColor(message);
-    }
+    
     process.stdout.write(`${message}\n`);
   }
 }
