@@ -1,4 +1,4 @@
-npm-package-skeleton
+broccoli-file-size
 ====================
 
 Skeleton of a simple NPM Package with Babel and CI already configured.
@@ -32,9 +32,9 @@ Skeleton of a simple NPM Package with Babel and CI already configured.
    <small>or alternatively: create a new one, then rebase from this one</small>
 2. Set initial version (ex: `0.1.0`) in `package.json`
 3. Replace the following occurrences
-  - [ ] `amercier/npm-package-skeleton` → *your repo slug*
-  - [ ] `npm-package-skeleton` → *your project name*
-  - [ ] `package-skeleton` → *your NPM package name*
+  - [ ] `amercier/broccoli-file-size` → *your repo slug*
+  - [ ] `broccoli-file-size` → *your project name*
+  - [ ] `broccoli-file-size` → *your NPM package name*
   - [ ] `Alex Mercier` → *your name*
   - [ ] `pro.alexandre.mercier@gmail.com` → *your public email address*
   - [ ] `http://amercier.com` → *your website*
@@ -66,32 +66,32 @@ Skeleton of a simple NPM Package with Babel and CI already configured.
 ---
 ## **Note:** the content after this is the actual package documentation (to be edited after cloning).
 
-npm-package-skeleton
+broccoli-file-size
 ====================
 
-[![Latest Stable Version](https://img.shields.io/npm/v/package-skeleton.svg)](https://www.npmjs.com/package/package-skeleton)
-[![License](https://img.shields.io/npm/l/package-skeleton.svg)](https://www.npmjs.com/package/package-skeleton)
-[![Build Status](https://img.shields.io/travis/amercier/npm-package-skeleton/master.svg)](https://travis-ci.org/amercier/npm-package-skeleton)
+[![Latest Stable Version](https://img.shields.io/npm/v/broccoli-file-size.svg)](https://www.npmjs.com/package/broccoli-file-size)
+[![License](https://img.shields.io/npm/l/broccoli-file-size.svg)](https://www.npmjs.com/package/broccoli-file-size)
+[![Build Status](https://img.shields.io/travis/amercier/broccoli-file-size/master.svg)](https://travis-ci.org/amercier/broccoli-file-size)
 
-[![Dependency Status](http://img.shields.io/gemnasium/amercier/npm-package-skeleton.svg)](https://gemnasium.com/amercier/npm-package-skeleton)
-[![NPM Downloads](https://img.shields.io/npm/dm/package-skeleton.svg)](https://www.npmjs.com/package/package-skeleton)
-[![Test Coverage](https://img.shields.io/codecov/c/github/amercier/npm-package-skeleton/master.svg)](https://codecov.io/github/amercier/npm-package-skeleton?branch=master)
-[![API Documentation](https://doc.esdoc.org/github.com/amercier/npm-package-skeleton/badge.svg)](https://doc.esdoc.org/github.com/amercier/npm-package-skeleton/)
-[![Code Climate](https://img.shields.io/codeclimate/github/amercier/npm-package-skeleton.svg)](https://codeclimate.com/github/amercier/npm-package-skeleton)
+[![Dependency Status](http://img.shields.io/gemnasium/amercier/broccoli-file-size.svg)](https://gemnasium.com/amercier/broccoli-file-size)
+[![NPM Downloads](https://img.shields.io/npm/dm/broccoli-file-size.svg)](https://www.npmjs.com/package/broccoli-file-size)
+[![Test Coverage](https://img.shields.io/codecov/c/github/amercier/broccoli-file-size/master.svg)](https://codecov.io/github/amercier/broccoli-file-size?branch=master)
+[![API Documentation](https://doc.esdoc.org/github.com/amercier/broccoli-file-size/badge.svg)](https://doc.esdoc.org/github.com/amercier/broccoli-file-size/)
+[![Code Climate](https://img.shields.io/codeclimate/github/amercier/broccoli-file-size.svg)](https://codeclimate.com/github/amercier/broccoli-file-size)
 
 
 Installation
 ------------
 
-    npm install --save package-skeleton
+    npm install --save broccoli-file-size
 
 Usage
 -----
 
 ### ES5
 
-    var xxx = require('package-skeleton').default;
+    var xxx = require('broccoli-file-size').default;
 
 ### ES2015+
 
-    import xxx from 'package-skeleton';
+    import xxx from 'broccoli-file-size';
