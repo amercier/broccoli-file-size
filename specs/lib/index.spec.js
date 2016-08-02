@@ -8,6 +8,7 @@ import { Builder } from 'broccoli';
 import bufferEqual from 'buffer-equal';
 
 import FileSizePlugin from '../../src/lib';
+
 const fixtureDir = join(__dirname, '..', 'fixture');
 
 let tree;
