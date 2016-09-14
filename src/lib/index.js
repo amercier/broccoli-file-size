@@ -14,6 +14,42 @@ import walk from 'walk';
 const [preadFile, pstat, pgzip] = [readFile, stat, gzip].map(promisify);
 
 /**
+ * Lists files of a directory recursively. Follows symbolic links.
+ * @param {String} dir Directory to scan
+ * @param {Function()} callback Callback executed when a file is found. Can return a Promise.
+ * @return {Promise} A new promise that is resolved once the given directory
+ * has been scanned entirely and all callbacks have completed.
+ */
+function listFiles(dir, callback) {
+  return new Promise((resolveThis, reject) => {
+    walk.walk(dir, { followLinks: true })
+    .on('file', (root, stats, next) => {
+      const destDir = relative(dir, root);
+      const relativePath = destDir ? join(destDir, stats.name) : stats.name;
+      resolve(relativePath).then(callback).then(next);
+    })
+    .on('errors', reject)
+    .on('end', resolveThis);
+  });
+}
+
+/**
+ * Symlink or copy a directory
+ * @param {String} dir Path to an existing
+ * @param {String} target Path of the symlink to create
+ */
+function symlinkOrCopySync(dir, target) {
+  try {
+    symlinkOrCopy.sync(dir, target);
+  } catch (e) {
+    if (existsSync(target)) {
+      rimraf.sync(target);
+    }
+    symlinkOrCopy.sync(dir, target);
+  }
+}
+
+/**
  * A Broccoli plugin that display sizes of all files found in its input path.
  */
 export default class FileSizePlugin extends Plugin {
@@ -56,49 +92,13 @@ export default class FileSizePlugin extends Plugin {
     const [inputPath] = this.inputPaths;
 
     // Symlink/copy input -> output
-    this.symlinkOrCopy(inputPath, this.outputPath);
+    symlinkOrCopySync(inputPath, this.outputPath);
 
     // Process output directory
-    return this.listFiles(inputPath, relativePath =>
+    return listFiles(inputPath, relativePath =>
       this.processFile(join(inputPath, relativePath))
         .then(sizes => this.print(relativePath, ...sizes))
     );
-  }
-
-  /**
-   * Lists files of a directory recursively. Follows symbolic links.
-   * @param {String} dir Directory to scan
-   * @param {Function()} callback Callback executed when a file is found. Can return a Promise.
-   * @return {Promise} A new promise that is resolved once the given directory
-   * has been scanned entirely and all callbacks have completed.
-   */
-  listFiles(dir, callback) {
-    return new Promise((resolveThis, reject) => {
-      walk.walk(dir, { followLinks: true })
-      .on('file', (root, stats, next) => {
-        const destDir = relative(dir, root);
-        const relativePath = destDir ? join(destDir, stats.name) : stats.name;
-        resolve(relativePath).then(callback).then(next);
-      })
-      .on('errors', reject)
-      .on('end', resolveThis);
-    });
-  }
-
-  /**
-   * Symlink or copy a directory
-   * @param {String} dir Path to an existing
-   * @param {String} target Path of the symlink to create
-   */
-  symlinkOrCopy(dir, target) {
-    try {
-      symlinkOrCopy.sync(dir, target);
-    } catch (e) {
-      if (existsSync(target)) {
-        rimraf.sync(target);
-      }
-      symlinkOrCopy.sync(dir, target);
-    }
   }
 
   /**
