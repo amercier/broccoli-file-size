@@ -1,5 +1,4 @@
 broccoli-file-size
-==================
 
 [![Latest Stable Version](https://img.shields.io/npm/v/broccoli-file-size.svg)](https://www.npmjs.com/package/broccoli-file-size)
 [![License](https://img.shields.io/npm/l/broccoli-file-size.svg)](https://www.npmjs.com/package/broccoli-file-size)
