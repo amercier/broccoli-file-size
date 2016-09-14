@@ -1,10 +1,10 @@
 {
-  "presets": ["es2015"],
+  "presets": ["latest"],
   "plugins": ["add-module-exports"],
   "env": {
     "test": {
       "plugins": [
-        [ "__coverage__", { "only": "src/" }]
+        ["istanbul", { "exclude": "specs/**" }]
       ]
     }
   }
